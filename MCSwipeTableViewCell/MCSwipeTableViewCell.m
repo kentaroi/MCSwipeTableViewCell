@@ -264,7 +264,8 @@ typedef NS_ENUM(NSUInteger, MCSwipeTableViewCellDirection) {
 }
 
 - (void)setRightTriggers:(NSArray<NSNumber *> *)triggers {
-    switch (triggers.count) {
+    NSUInteger numberOfTriggers = triggers.count > 3 ? 3 : triggers.count;
+    switch (numberOfTriggers) {
         case 3:
             _rightThirdTrigger = (CGFloat)triggers[2].doubleValue;
         case 2:
@@ -279,7 +280,8 @@ typedef NS_ENUM(NSUInteger, MCSwipeTableViewCellDirection) {
 }
 
 - (void)setLeftTriggers:(NSArray<NSNumber *> *)triggers {
-    switch (triggers.count) {
+    NSUInteger numberOfTriggers = triggers.count > 3 ? 3 : triggers.count;
+    switch (numberOfTriggers) {
         case 3:
             _leftThirdTrigger = (CGFloat)triggers[2].doubleValue;
         case 2:
