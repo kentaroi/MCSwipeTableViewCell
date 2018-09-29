@@ -10,6 +10,7 @@
 
 static CGFloat const kMCStop1                       = 0.25; // Percentage limit to trigger the first action
 static CGFloat const kMCStop2                       = 0.75; // Percentage limit to trigger the second action
+static CGFloat const kMCStop3                       = 0.90;
 static CGFloat const kMCBounceAmplitude             = 20.0; // Maximum bounce amplitude when using the MCSwipeTableViewCellModeSwitch mode
 static CGFloat const kMCDamping                     = 0.6;  // Damping of the spring animation
 static CGFloat const kMCVelocity                    = 0.9;  // Velocity of the spring animation
@@ -116,8 +117,10 @@ typedef NS_ENUM(NSUInteger, MCSwipeTableViewCellDirection) {
     
     _rightFirstTrigger  = kMCStop1;
     _rightSecondTrigger = kMCStop2;
+    _rightThirdTrigger = kMCStop3;
     _leftFirstTrigger   = kMCStop1;
     _leftSecondTrigger  = kMCStop2;
+    _leftThirdTrigger  = kMCStop3;
     
     _damping = kMCDamping;
     _velocity = kMCVelocity;
@@ -125,21 +128,27 @@ typedef NS_ENUM(NSUInteger, MCSwipeTableViewCellDirection) {
     
     _defaultColor = [UIColor whiteColor];
     
-    _modeForState1 = MCSwipeTableViewCellModeNone;
-    _modeForState2 = MCSwipeTableViewCellModeNone;
-    _modeForState3 = MCSwipeTableViewCellModeNone;
-    _modeForState4 = MCSwipeTableViewCellModeNone;
+    _modeForStateR1 = MCSwipeTableViewCellModeNone;
+    _modeForStateR2 = MCSwipeTableViewCellModeNone;
+    _modeForStateR3 = MCSwipeTableViewCellModeNone;
+    _modeForStateL1 = MCSwipeTableViewCellModeNone;
+    _modeForStateL2 = MCSwipeTableViewCellModeNone;
+    _modeForStateL3 = MCSwipeTableViewCellModeNone;
     
-    _color1 = nil;
-    _color2 = nil;
-    _color3 = nil;
-    _color4 = nil;
+    _colorR1 = nil;
+    _colorR2 = nil;
+    _colorR3 = nil;
+    _colorL1 = nil;
+    _colorL2 = nil;
+    _colorL3 = nil;
     
     _activeView = nil;
-    _view1 = nil;
-    _view2 = nil;
-    _view3 = nil;
-    _view4 = nil;
+    _viewR1 = nil;
+    _viewR2 = nil;
+    _viewR3 = nil;
+    _viewL1 = nil;
+    _viewL2 = nil;
+    _viewL3 = nil;
 }
 
 #pragma mark - Prepare reuse
@@ -238,6 +247,48 @@ typedef NS_ENUM(NSUInteger, MCSwipeTableViewCellDirection) {
     _leftSecondTrigger = trigger;
 }
 
+- (CGFloat)thirdTrigger {
+    if (_rightThirdTrigger != _leftThirdTrigger)
+        return CGFLOAT_MAX;
+
+    return _rightThirdTrigger;
+}
+
+- (void)setThirdTrigger:(CGFloat)trigger {
+    _rightThirdTrigger = trigger;
+    _leftThirdTrigger = trigger;
+}
+
+- (NSArray<NSNumber *> *)rightTriggers {
+    return @[@(_rightFirstTrigger), @(_rightSecondTrigger), @(_rightThirdTrigger)];
+}
+
+- (void)setRightTriggers:(NSArray<NSNumber *> *)triggers {
+    switch (triggers.count) {
+        case 3:
+            _rightThirdTrigger = (CGFloat)triggers[2].doubleValue;
+        case 2:
+            _rightSecondTrigger = (CGFloat)triggers[1].doubleValue;
+        case 1:
+            _rightFirstTrigger = (CGFloat)triggers[0].doubleValue;
+    }
+}
+
+- (NSArray<NSNumber *> *)leftTriggers {
+    return @[@(_leftFirstTrigger), @(_leftSecondTrigger), @(_leftThirdTrigger)];
+}
+
+- (void)setLeftTriggers:(NSArray<NSNumber *> *)triggers {
+    switch (triggers.count) {
+        case 3:
+            _leftThirdTrigger = (CGFloat)triggers[2].doubleValue;
+        case 2:
+            _leftSecondTrigger = (CGFloat)triggers[1].doubleValue;
+        case 1:
+            _leftFirstTrigger = (CGFloat)triggers[0].doubleValue;
+    }
+}
+
 - (void)setSwipeGestureWithView:(UIView *)view
                           color:(UIColor *)color
                            mode:(MCSwipeTableViewCellMode)mode
@@ -248,32 +299,46 @@ typedef NS_ENUM(NSUInteger, MCSwipeTableViewCellDirection) {
     NSParameterAssert(color);
     
     // Depending on the state we assign the attributes
-    if ((state & MCSwipeTableViewCellState1) == MCSwipeTableViewCellState1) {
-        _completionBlock1 = completionBlock;
-        _view1 = view;
-        _color1 = color;
-        _modeForState1 = mode;
+    if ((state & MCSwipeTableViewCellStateRight1) == MCSwipeTableViewCellStateRight1) {
+        _completionBlockR1 = completionBlock;
+        _viewR1 = view;
+        _colorR1 = color;
+        _modeForStateR1 = mode;
     }
     
-    if ((state & MCSwipeTableViewCellState2) == MCSwipeTableViewCellState2) {
-        _completionBlock2 = completionBlock;
-        _view2 = view;
-        _color2 = color;
-        _modeForState2 = mode;
+    if ((state & MCSwipeTableViewCellStateRight2) == MCSwipeTableViewCellStateRight2) {
+        _completionBlockR2 = completionBlock;
+        _viewR2 = view;
+        _colorR2 = color;
+        _modeForStateR2 = mode;
     }
     
-    if ((state & MCSwipeTableViewCellState3) == MCSwipeTableViewCellState3) {
-        _completionBlock3 = completionBlock;
-        _view3 = view;
-        _color3 = color;
-        _modeForState3 = mode;
+    if ((state & MCSwipeTableViewCellStateRight3) == MCSwipeTableViewCellStateRight3) {
+        _completionBlockR3 = completionBlock;
+        _viewR3 = view;
+        _colorR3 = color;
+        _modeForStateR3 = mode;
     }
     
-    if ((state & MCSwipeTableViewCellState4) == MCSwipeTableViewCellState4) {
-        _completionBlock4 = completionBlock;
-        _view4 = view;
-        _color4 = color;
-        _modeForState4 = mode;
+    if ((state & MCSwipeTableViewCellStateLeft1) == MCSwipeTableViewCellStateLeft1) {
+        _completionBlockL1 = completionBlock;
+        _viewL1 = view;
+        _colorL1 = color;
+        _modeForStateL1 = mode;
+    }
+
+    if ((state & MCSwipeTableViewCellStateLeft2) == MCSwipeTableViewCellStateLeft2) {
+        _completionBlockL2 = completionBlock;
+        _viewL2 = view;
+        _colorL2 = color;
+        _modeForStateL2= mode;
+    }
+
+    if ((state & MCSwipeTableViewCellStateLeft3) == MCSwipeTableViewCellStateLeft3) {
+        _completionBlockL3 = completionBlock;
+        _viewL3 = view;
+        _colorL3 = color;
+        _modeForStateL3= mode;
     }
 }
 
@@ -317,20 +382,28 @@ typedef NS_ENUM(NSUInteger, MCSwipeTableViewCellDirection) {
         MCSwipeTableViewCellState cellState = [self stateWithPercentage:percentage];
         MCSwipeTableViewCellMode cellMode = MCSwipeTableViewCellModeNone;
         
-        if (cellState == MCSwipeTableViewCellState1 && _modeForState1) {
-            cellMode = self.modeForState1;
+        if (cellState == MCSwipeTableViewCellStateRight1 && _modeForStateR1) {
+            cellMode = self.modeForStateR1;
         }
         
-        else if (cellState == MCSwipeTableViewCellState2 && _modeForState2) {
-            cellMode = self.modeForState2;
+        else if (cellState == MCSwipeTableViewCellStateRight2 && _modeForStateR2) {
+            cellMode = self.modeForStateR2;
         }
         
-        else if (cellState == MCSwipeTableViewCellState3 && _modeForState3) {
-            cellMode = self.modeForState3;
+        else if (cellState == MCSwipeTableViewCellStateRight3 && _modeForStateR3) {
+            cellMode = self.modeForStateR3;
         }
         
-        else if (cellState == MCSwipeTableViewCellState4 && _modeForState4) {
-            cellMode = self.modeForState4;
+        else if (cellState == MCSwipeTableViewCellStateLeft1 && _modeForStateL1) {
+            cellMode = self.modeForStateL1;
+        }
+
+        else if (cellState == MCSwipeTableViewCellStateLeft2 && _modeForStateL2) {
+            cellMode = self.modeForStateL2;
+        }
+
+        else if (cellState == MCSwipeTableViewCellStateLeft3 && _modeForStateL3) {
+            cellMode = self.modeForStateL3;
         }
         
         if (cellMode == MCSwipeTableViewCellModeExit && _direction != MCSwipeTableViewCellDirectionCenter) {
@@ -360,11 +433,11 @@ typedef NS_ENUM(NSUInteger, MCSwipeTableViewCellDirection) {
         CGPoint point = [g velocityInView:self];
         
         if (fabs(point.x) > fabs(point.y) ) {
-            if (point.x < 0 && !_modeForState3 && !_modeForState4) {
+            if (point.x < 0 && !_modeForStateL1 && !_modeForStateL2 && !_modeForStateL3) {
                 return NO;
             }
             
-            if (point.x > 0 && !_modeForState1 && !_modeForState2) {
+            if (point.x > 0 && !_modeForStateR1 && !_modeForStateR2 && !_modeForStateR3) {
                 return NO;
             }
             
@@ -428,21 +501,23 @@ typedef NS_ENUM(NSUInteger, MCSwipeTableViewCellDirection) {
 - (UIView *)viewWithPercentage:(CGFloat)percentage {
     
     UIView *view;
-    
-    if (percentage >= 0 && _modeForState1) {
-        view = _view1;
-    }
-    
-    if (percentage >= _rightSecondTrigger && _modeForState2) {
-        view = _view2;
-    }
-    
-    if (percentage < 0  && _modeForState3) {
-        view = _view3;
-    }
-    
-    if (percentage <= -_leftSecondTrigger && _modeForState4) {
-        view = _view4;
+
+    if (percentage >= 0) {
+        if (_modeForStateR3 && percentage >= _rightThirdTrigger) {
+            view = _viewR3;
+        } else if (_modeForStateR2 && percentage >= _rightSecondTrigger) {
+            view = _viewR2;
+        } else if (_modeForStateR1) {
+            view = _viewR1;
+        }
+    } else {
+        if (_modeForStateL3 && percentage <= -_leftThirdTrigger) {
+            view = _viewL3;
+        } else if (_modeForStateL2 && percentage <= -_leftSecondTrigger) {
+            view = _viewL2;
+        } else if (_modeForStateL1) {
+            view = _viewL1;
+        }
     }
     
     return view;
@@ -473,20 +548,22 @@ typedef NS_ENUM(NSUInteger, MCSwipeTableViewCellDirection) {
     
     color = self.defaultColor ? self.defaultColor : [UIColor clearColor];
     
-    if (percentage > _rightFirstTrigger && _modeForState1) {
-        color = _color1;
-    }
-    
-    if (percentage > _rightSecondTrigger && _modeForState2) {
-        color = _color2;
-    }
-    
-    if (percentage < -_leftFirstTrigger && _modeForState3) {
-        color = _color3;
-    }
-    
-    if (percentage <= -_leftSecondTrigger && _modeForState4) {
-        color = _color4;
+    if (percentage > _rightFirstTrigger) {
+        if (_modeForStateR3 && percentage > _rightThirdTrigger) {
+            color = _colorR3;
+        } else if (_modeForStateR2 && percentage > _rightSecondTrigger) {
+            color = _colorR2;
+        } else if (_modeForStateR1) {
+            color = _colorR1;
+        }
+    } else if (percentage < -_leftFirstTrigger) {
+        if (_modeForStateL3 && percentage < -_leftThirdTrigger) {
+            color = _colorL3;
+        } else if (_modeForStateL2 && percentage < -_leftSecondTrigger) {
+            color = _colorL2;
+        } else if (_modeForStateL1) {
+            color = _colorL1;
+        }
     }
     
     return color;
@@ -497,20 +574,22 @@ typedef NS_ENUM(NSUInteger, MCSwipeTableViewCellDirection) {
     
     state = MCSwipeTableViewCellStateNone;
     
-    if (percentage >= _rightFirstTrigger && _modeForState1) {
-        state = MCSwipeTableViewCellState1;
-    }
-    
-    if (percentage >= _rightSecondTrigger && _modeForState2) {
-        state = MCSwipeTableViewCellState2;
-    }
-    
-    if (percentage <= -_leftFirstTrigger && _modeForState3) {
-        state = MCSwipeTableViewCellState3;
-    }
-    
-    if (percentage <= -_leftSecondTrigger && _modeForState4) {
-        state = MCSwipeTableViewCellState4;
+    if (percentage >= _rightFirstTrigger) {
+        if (_modeForStateR3 && percentage >= _rightThirdTrigger) {
+            state = MCSwipeTableViewCellStateRight3;
+        } else if (_modeForStateR2 && percentage >= _rightSecondTrigger) {
+            state = MCSwipeTableViewCellStateRight2;
+        } else if (_modeForStateR1) {
+            state = MCSwipeTableViewCellStateRight1;
+        }
+    } else if (percentage <= -_leftFirstTrigger) {
+        if (_modeForStateL3 && percentage <= -_leftThirdTrigger) {
+            state = MCSwipeTableViewCellStateLeft3;
+        } else if (_modeForStateL2 && percentage <= -_leftSecondTrigger) {
+            state = MCSwipeTableViewCellStateLeft2;
+        } else if (_modeForStateL1) {
+            state = MCSwipeTableViewCellStateLeft1;
+        }
     }
     
     return state;
@@ -707,24 +786,34 @@ typedef NS_ENUM(NSUInteger, MCSwipeTableViewCellDirection) {
     MCSwipeCompletionBlock completionBlock;
     
     switch (state) {
-        case MCSwipeTableViewCellState1: {
-            mode = self.modeForState1;
-            completionBlock = _completionBlock1;
+        case MCSwipeTableViewCellStateRight1: {
+            mode = self.modeForStateR1;
+            completionBlock = _completionBlockR1;
         } break;
             
-        case MCSwipeTableViewCellState2: {
-            mode = self.modeForState2;
-            completionBlock = _completionBlock2;
+        case MCSwipeTableViewCellStateRight2: {
+            mode = self.modeForStateR2;
+            completionBlock = _completionBlockR2;
         } break;
             
-        case MCSwipeTableViewCellState3: {
-            mode = self.modeForState3;
-            completionBlock = _completionBlock3;
+        case MCSwipeTableViewCellStateRight3: {
+            mode = self.modeForStateR3;
+            completionBlock = _completionBlockR3;
         } break;
             
-        case MCSwipeTableViewCellState4: {
-            mode = self.modeForState4;
-            completionBlock = _completionBlock4;
+        case MCSwipeTableViewCellStateLeft1: {
+            mode = self.modeForStateL1;
+            completionBlock = _completionBlockL1;
+        } break;
+
+        case MCSwipeTableViewCellStateLeft2: {
+            mode = self.modeForStateL2;
+            completionBlock = _completionBlockL2;
+        } break;
+
+        case MCSwipeTableViewCellStateLeft3: {
+            mode = self.modeForStateL3;
+            completionBlock = _completionBlockL3;
         } break;
             
         default:

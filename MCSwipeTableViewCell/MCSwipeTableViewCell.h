@@ -17,6 +17,43 @@ typedef NS_OPTIONS(NSUInteger, MCSwipeTableViewCellState) {
     MCSwipeTableViewCellStateNone = 0,
     
     /** 1st state triggered during a Left -> Right swipe. */
+    MCSwipeTableViewCellStateRight1 = (1 << 0),
+    MCSwipeTableViewCellStateFromoLeft1 = (1 << 0),
+
+    /** 2nd state triggered during a Left -> Right swipe. */
+    MCSwipeTableViewCellStateRight2 = (1 << 1),
+    MCSwipeTableViewCellStateFromoLeft2 = (1 << 1),
+
+    /** 3rd state triggered during a Left -> Right swipe. */
+    MCSwipeTableViewCellStateRight3 = (1 << 4),
+    MCSwipeTableViewCellStateFromoLeft3 = (1 << 4),
+
+    // Disabled, but reserved for possible future use
+    // /** 4th state triggered during a Left -> Right swipe. */
+    // MCSwipeTableViewCellStateRight4 = (1 << 5),
+    // MCSwipeTableViewCellStateFromoLeft4 = (1 << 5),
+
+    /** 1st state triggered during a Right -> Left swipe. */
+    MCSwipeTableViewCellStateLeft1 = (1 << 2),
+    MCSwipeTableViewCellStateFromRight1 = (1 << 2),
+
+    /** 2nd state triggered during a Right -> Left swipe. */
+    MCSwipeTableViewCellStateLeft2 = (1 << 3),
+    MCSwipeTableViewCellStateFromRight2 = (1 << 3),
+
+    /** 3rd state triggered during a Right -> Left swipe. */
+    MCSwipeTableViewCellStateLeft3 = (1 << 6),
+    MCSwipeTableViewCellStateFromRight3 = (1 << 6),
+
+    // Disabled, but reserved for possible future use
+    // /** 4th state triggered during a Right -> Left swipe. */
+    // MCSwipeTableViewCellStateLeft4 = (1 << 7),
+    // MCSwipeTableViewCellStateFromRight4 = (1 << 7),
+
+    /************************/
+    /** Legacy option names */
+
+    /** 1st state triggered during a Left -> Right swipe. */
     MCSwipeTableViewCellState1 = (1 << 0),
     
     /** 2nd state triggered during a Left -> Right swipe. */
@@ -82,42 +119,60 @@ typedef void (^MCSwipeCompletionBlock)(MCSwipeTableViewCell *cell, MCSwipeTableV
 
 
 /** 1st color of the state triggered during a Left -> Right swipe. */
-@property (nonatomic, strong, readwrite) UIColor *color1;
+@property (nonatomic, strong, readwrite) UIColor *colorR1;
 
 /** 2nd color of the state triggered during a Left -> Right swipe. */
-@property (nonatomic, strong, readwrite) UIColor *color2;
+@property (nonatomic, strong, readwrite) UIColor *colorR2;
+
+/** 3rd color of the state triggered during a Left -> Right swipe. */
+@property (nonatomic, strong, readwrite) UIColor *colorR3;
 
 /** 1st color of the state triggered during a Right -> Left swipe. */
-@property (nonatomic, strong, readwrite) UIColor *color3;
+@property (nonatomic, strong, readwrite) UIColor *colorL1;
 
 /** 2nd color of the state triggered during a Right -> Left swipe. */
-@property (nonatomic, strong, readwrite) UIColor *color4;
+@property (nonatomic, strong, readwrite) UIColor *colorL2;
+
+/** 3rd color of the state triggered during a Right -> Left swipe. */
+@property (nonatomic, strong, readwrite) UIColor *colorL3;
 
 
 /** 1st view of the state triggered during a Left -> Right swipe. */
-@property (nonatomic, strong, readwrite) UIView *view1;
+@property (nonatomic, strong, readwrite) UIView *viewR1;
 
 /** 2nd view of the state triggered during a Left -> Right swipe. */
-@property (nonatomic, strong, readwrite) UIView *view2;
+@property (nonatomic, strong, readwrite) UIView *viewR2;
+
+/** 3rd view of the state triggered during a Left -> Right swipe. */
+@property (nonatomic, strong, readwrite) UIView *viewR3;
 
 /** 1st view of the state triggered during a Right -> Left swipe. */
-@property (nonatomic, strong, readwrite) UIView *view3;
+@property (nonatomic, strong, readwrite) UIView *viewL1;
 
 /** 2nd view of the state triggered during a Right -> Left swipe. */
-@property (nonatomic, strong, readwrite) UIView *view4;
+@property (nonatomic, strong, readwrite) UIView *viewL2;
+
+/** 3rd view of the state triggered during a Right -> Left swipe. */
+@property (nonatomic, strong, readwrite) UIView *viewL3;
 
 
 /** 1st Block of the state triggered during a Left -> Right swipe. */
-@property (nonatomic, copy, readwrite) MCSwipeCompletionBlock completionBlock1;
+@property (nonatomic, copy, readwrite) MCSwipeCompletionBlock completionBlockR1;
 
 /** 2nd Block of the state triggered during a Left -> Right swipe. */
-@property (nonatomic, copy, readwrite) MCSwipeCompletionBlock completionBlock2;
+@property (nonatomic, copy, readwrite) MCSwipeCompletionBlock completionBlockR2;
+
+/** 3rd Block of the state triggered during a Left -> Right swipe. */
+@property (nonatomic, copy, readwrite) MCSwipeCompletionBlock completionBlockR3;
 
 /** 1st Block of the state triggered during a Right -> Left swipe. */
-@property (nonatomic, copy, readwrite) MCSwipeCompletionBlock completionBlock3;
+@property (nonatomic, copy, readwrite) MCSwipeCompletionBlock completionBlockL1;
 
 /** 2nd Block of the state triggered during a Right -> Left swipe. */
-@property (nonatomic, copy, readwrite) MCSwipeCompletionBlock completionBlock4;
+@property (nonatomic, copy, readwrite) MCSwipeCompletionBlock completionBlockL2;
+
+/** 3rd Block of the state triggered during a Right -> Left swipe. */
+@property (nonatomic, copy, readwrite) MCSwipeCompletionBlock completionBlockL3;
 
 
 // Percentage of when the first and second action are activated, respectively
@@ -134,24 +189,39 @@ typedef void (^MCSwipeCompletionBlock)(MCSwipeTableViewCell *cell, MCSwipeTableV
 /** Percentage value to trigger the 2nd state of a right swipe gesture. */
 @property (nonatomic, assign, readwrite) CGFloat rightSecondTrigger;
 
+/** Percentage value to trigger the 3rd state of a right swipe gesture. */
+@property (nonatomic, assign, readwrite) CGFloat rightThirdTrigger;
+
 /** Percentage value to trigger the 1st state of a left swipe gesture. */
 @property (nonatomic, assign, readwrite) CGFloat leftFirstTrigger;
 
 /** Percentage value to trigger the 2nd state of a left swipe gesture. */
 @property (nonatomic, assign, readwrite) CGFloat leftSecondTrigger;
 
+/** Percentage value to trigger the 3rd state of a left swipe gesture. */
+@property (nonatomic, assign, readwrite) CGFloat leftThirdTrigger;
+
+@property (nonatomic) NSArray<NSNumber *> *rightTriggers;
+@property (nonatomic) NSArray<NSNumber *> *leftTriggers;
+
 
 /** 1st `MCSwipeTableViewCellMode` of the state triggered during a Left -> Right swipe. */
-@property (nonatomic, assign, readwrite) MCSwipeTableViewCellMode modeForState1;
+@property (nonatomic, assign, readwrite) MCSwipeTableViewCellMode modeForStateR1;
 
 /** 2nd `MCSwipeTableViewCellMode` of the state triggered during a Left -> Right swipe. */
-@property (nonatomic, assign, readwrite) MCSwipeTableViewCellMode modeForState2;
+@property (nonatomic, assign, readwrite) MCSwipeTableViewCellMode modeForStateR2;
+
+/** 3rd `MCSwipeTableViewCellMode` of the state triggered during a Left -> Right swipe. */
+@property (nonatomic, assign, readwrite) MCSwipeTableViewCellMode modeForStateR3;
 
 /** 1st `MCSwipeTableViewCellMode` of the state triggered during a Right -> Left swipe. */
-@property (nonatomic, assign, readwrite) MCSwipeTableViewCellMode modeForState3;
+@property (nonatomic, assign, readwrite) MCSwipeTableViewCellMode modeForStateL1;
 
 /** 2nd `MCSwipeTableViewCellMode` of the state triggered during a Right -> Left swipe. */
-@property (nonatomic, assign, readwrite) MCSwipeTableViewCellMode modeForState4;
+@property (nonatomic, assign, readwrite) MCSwipeTableViewCellMode modeForStateL2;
+
+/** 3rd `MCSwipeTableViewCellMode` of the state triggered during a Right -> Left swipe. */
+@property (nonatomic, assign, readwrite) MCSwipeTableViewCellMode modeForStateL3;
 
 
 /** Boolean indicator to know if the cell is currently dragged. */
