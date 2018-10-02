@@ -623,34 +623,34 @@ typedef NS_ENUM(NSUInteger, MCSwipeTableViewCellDirection) {
         return;
     }
     
+    CGFloat threshold = 0.25;
     CGPoint position = CGPointZero;
     position.y = CGRectGetHeight(self.bounds) / 2.0;
     
     if (isDragging) {
-        if (percentage >= 0 && percentage < _rightFirstTrigger) {
-            position.x = [self offsetWithPercentage:(_rightFirstTrigger / 2) relativeToWidth:CGRectGetWidth(self.bounds)];
+        if (percentage >= 0 && percentage < threshold) {
+            position.x = [self offsetWithPercentage:(percentage / 2) relativeToWidth:CGRectGetWidth(self.bounds)];
         }
         
-        else if (percentage >= _rightFirstTrigger) {
-            position.x = [self offsetWithPercentage:percentage - (_rightFirstTrigger / 2) relativeToWidth:CGRectGetWidth(self.bounds)];
+        else if (percentage >= threshold) {
+            position.x = [self offsetWithPercentage:percentage - (threshold / 2) relativeToWidth:CGRectGetWidth(self.bounds)];
         }
         
-        else if (percentage < 0 && percentage >= -_leftFirstTrigger) {
-            position.x = CGRectGetWidth(self.bounds) - [self offsetWithPercentage:(_leftFirstTrigger / 2) relativeToWidth:CGRectGetWidth(self.bounds)];
+        else if (percentage < 0 && percentage >= -threshold) {
+            position.x = CGRectGetWidth(self.bounds) - [self offsetWithPercentage:(-percentage / 2) relativeToWidth:CGRectGetWidth(self.bounds)];
         }
         
-        else if (percentage < -_leftFirstTrigger) {
-            position.x = CGRectGetWidth(self.bounds) + [self offsetWithPercentage:percentage + (_leftFirstTrigger / 2) relativeToWidth:CGRectGetWidth(self.bounds)];
+        else if (percentage < -threshold) {
+            position.x = CGRectGetWidth(self.bounds) + [self offsetWithPercentage:percentage + (threshold / 2) relativeToWidth:CGRectGetWidth(self.bounds)];
         }
     }
     
     else {
         if (_direction == MCSwipeTableViewCellDirectionRight) {
-            position.x = [self offsetWithPercentage:(_rightFirstTrigger / 2) relativeToWidth:CGRectGetWidth(self.bounds)];
         }
         
         else if (_direction == MCSwipeTableViewCellDirectionLeft) {
-            position.x = CGRectGetWidth(self.bounds) - [self offsetWithPercentage:(_leftFirstTrigger / 2) relativeToWidth:CGRectGetWidth(self.bounds)];
+            position.x = CGRectGetWidth(self.bounds);
         }
         
         else {
